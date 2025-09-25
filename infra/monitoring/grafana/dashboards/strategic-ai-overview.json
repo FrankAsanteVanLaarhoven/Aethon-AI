@@ -1,0 +1,229 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "StrategicAI Platform - Overview",
+    "tags": ["strategic-ai", "overview", "production"],
+    "style": "dark",
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "System Health Overview",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "up{job=~\"api-gateway|business-intelligence|competitive-intelligence|multi-agent|strategic-simulation|unified-navigation\"}",
+            "legendFormat": "{{job}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "red",
+                  "value": 0
+                },
+                {
+                  "color": "green",
+                  "value": 1
+                }
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "id": 2,
+        "title": "Request Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{job=~\"api-gateway|business-intelligence|competitive-intelligence|multi-agent|strategic-simulation|unified-navigation\"}[5m])",
+            "legendFormat": "{{job}} - {{method}}"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Requests/sec",
+            "min": 0
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 0
+        }
+      },
+      {
+        "id": 3,
+        "title": "Response Time",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job=~\"api-gateway|business-intelligence|competitive-intelligence|multi-agent|strategic-simulation|unified-navigation\"}[5m]))",
+            "legendFormat": "{{job}} - 95th percentile"
+          },
+          {
+            "expr": "histogram_quantile(0.50, rate(http_request_duration_seconds_bucket{job=~\"api-gateway|business-intelligence|competitive-intelligence|multi-agent|strategic-simulation|unified-navigation\"}[5m]))",
+            "legendFormat": "{{job}} - 50th percentile"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Seconds",
+            "min": 0
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 8
+        }
+      },
+      {
+        "id": 4,
+        "title": "Error Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{job=~\"api-gateway|business-intelligence|competitive-intelligence|multi-agent|strategic-simulation|unified-navigation\",status=~\"5..\"}[5m])",
+            "legendFormat": "{{job}} - 5xx errors"
+          },
+          {
+            "expr": "rate(http_requests_total{job=~\"api-gateway|business-intelligence|competitive-intelligence|multi-agent|strategic-simulation|unified-navigation\",status=~\"4..\"}[5m])",
+            "legendFormat": "{{job}} - 4xx errors"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Errors/sec",
+            "min": 0
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 8
+        }
+      },
+      {
+        "id": 5,
+        "title": "CPU Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(container_cpu_usage_seconds_total{name=~\"api-gateway|business-intelligence|competitive-intelligence|multi-agent|strategic-simulation|unified-navigation\"}[5m]) * 100",
+            "legendFormat": "{{name}}"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "CPU %",
+            "min": 0,
+            "max": 100
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 16
+        }
+      },
+      {
+        "id": 6,
+        "title": "Memory Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "container_memory_usage_bytes{name=~\"api-gateway|business-intelligence|competitive-intelligence|multi-agent|strategic-simulation|unified-navigation\"} / container_spec_memory_limit_bytes{name=~\"api-gateway|business-intelligence|competitive-intelligence|multi-agent|strategic-simulation|unified-navigation\"} * 100",
+            "legendFormat": "{{name}}"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Memory %",
+            "min": 0,
+            "max": 100
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 16
+        }
+      },
+      {
+        "id": 7,
+        "title": "Database Connections",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "pg_stat_database_numbackends{job=\"postgres\"}",
+            "legendFormat": "PostgreSQL - Active Connections"
+          },
+          {
+            "expr": "redis_connected_clients{job=\"redis\"}",
+            "legendFormat": "Redis - Connected Clients"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Connections",
+            "min": 0
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 24
+        }
+      },
+      {
+        "id": 8,
+        "title": "Queue Length",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "kafka_consumer_lag_sum{job=\"kafka\"}",
+            "legendFormat": "Kafka - Consumer Lag"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Messages",
+            "min": 0
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 24
+        }
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "30s",
+    "schemaVersion": 27,
+    "version": 1
+  }
+}

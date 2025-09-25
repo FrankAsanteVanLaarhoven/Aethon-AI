@@ -1,0 +1,325 @@
+# Strategic AI Platform - Cursor IDE Project Rules
+
+## Project Overview
+This is a world-class business intelligence platform with 16 revolutionary features, implementing:
+- **Next.js 14** with App Router and TypeScript
+- **FastAPI** backend with Python 3.11+
+- **WebRTC** real-time collaboration
+- **PWA** capabilities for offline functionality
+- **Multi-agent orchestration** with quantum-enhanced algorithms
+
+## Architecture Principles
+
+### Frontend (Next.js 14)
+- **App Router**: Use `/app` directory structure exclusively
+- **TypeScript**: Strict typing required, no `any` types
+- **Components**: Functional components with hooks only
+- **Styling**: Tailwind CSS with custom design system
+- **State**: Zustand for global state, React state for local
+- **Data Fetching**: TanStack Query for server state
+
+### Backend (FastAPI)
+- **Async/Await**: All endpoints must be async
+- **Pydantic**: Use for all data validation and serialization
+- **Error Handling**: Comprehensive error responses with proper HTTP codes
+- **Database**: PostgreSQL primary, MongoDB for documents, Redis for caching
+- **Security**: JWT authentication, CORS, rate limiting
+
+### WebRTC Implementation
+- **Signaling**: Socket.io for peer-to-peer coordination
+- **STUN/TURN**: Google STUN servers, TURN for NAT traversal
+- **Media**: Video, audio, and screen sharing support
+- **Data Channels**: Real-time messaging and file transfer
+
+### PWA Features
+- **Service Worker**: Caching strategies for offline functionality
+- **Manifest**: App installation and native-like experience
+- **Push Notifications**: Real-time updates and alerts
+- **Offline Support**: Critical features work without internet
+
+## Coding Standards
+
+### TypeScript Rules
+```typescript
+// ✅ Good
+interface UserData {
+  id: string
+  name: string
+  email: string
+}
+
+const processUser = (user: UserData): Promise<void> => {
+  // Implementation
+}
+
+// ❌ Bad
+const processUser = (user: any) => {
+  // Implementation
+}
+```
+
+### React Component Structure
+```typescript
+// ✅ Good
+interface ComponentProps {
+  title: string
+  onAction: () => void
+}
+
+export const Component: React.FC<ComponentProps> = ({ title, onAction }) => {
+  const [state, setState] = useState<string>('')
+  
+  useEffect(() => {
+    // Side effects
+  }, [])
+  
+  return (
+    <div className="component-container">
+      <h1>{title}</h1>
+      <button onClick={onAction}>Action</button>
+    </div>
+  )
+}
+```
+
+### API Endpoint Structure
+```python
+# ✅ Good
+@router.post("/api/v1/feature/analyze")
+async def analyze_data(
+    request: AnalysisRequest,
+    current_user: User = Depends(get_current_user)
+) -> AnalysisResponse:
+    try:
+        result = await analysis_service.process(request)
+        return AnalysisResponse(
+            success=True,
+            data=result,
+            timestamp=datetime.utcnow()
+        )
+    except ValidationError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Analysis failed: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+```
+
+## File Organization
+
+### Frontend Structure
+```
+frontend/
+├── app/                    # Next.js App Router
+│   ├── (auth)/            # Route groups
+│   ├── api/               # API routes
+│   └── [feature]/         # Feature pages
+├── src/
+│   ├── components/        # Reusable components
+│   │   ├── ui/           # Base UI components
+│   │   ├── webrtc/       # WebRTC components
+│   │   └── features/     # Feature-specific components
+│   ├── hooks/            # Custom hooks
+│   ├── lib/              # Utilities and configurations
+│   ├── services/         # API services
+│   └── types/            # TypeScript type definitions
+└── public/               # Static assets
+```
+
+### Backend Structure
+```
+backend/
+├── app/
+│   ├── api/              # API endpoints
+│   │   └── v1/          # Version 1 API
+│   ├── core/            # Core configurations
+│   ├── db/              # Database models and sessions
+│   ├── services/        # Business logic
+│   │   └── revolutionary_features/  # 16 core features
+│   ├── security/        # Authentication and security
+│   └── main.py          # FastAPI application
+├── worker/              # Celery background tasks
+└── tests/               # Test suites
+```
+
+## Revolutionary Features Implementation
+
+### Core Features (All 16 Implemented)
+1. **ARPE** - Autonomous Regulatory Prophecy Engine
+2. **QESO** - Quantum-Enhanced Strategic Optimization
+3. **ABME** - Autonomous Business Model Execution
+4. **SNSE** - Sovereign National Security Engine
+5. **SCI** - Synthetic Competition Intelligence
+6. **CEIS** - Cross-Enterprise Intelligence Synthesis
+7. **PSCDO** - Predictive Supply Chain Disruption Oracle
+8. **RCRE** - Real-Time Competitive Response Engine
+9. **DRAD** - Dynamic Regulatory Arbitrage Discovery
+10. **Geopolitical Prophecy** - Economic Warfare Detection
+11. **Military Integration** - NATO/Allied Interoperability
+12. **Educational Network** - Population-scale Intelligence
+13. **Corporate Transformation** - McKinsey-surpassing Capabilities
+14. **Resource Optimization** - Planetary Resource Management
+15. **Economic Policy** - Real-time Policy Generation
+16. **Compliance Automation** - Universal Jurisdiction Support
+
+### Feature Implementation Pattern
+```typescript
+// Each feature follows this pattern:
+interface FeatureConfig {
+  name: string
+  version: string
+  capabilities: string[]
+  apiEndpoints: string[]
+  frontendComponents: string[]
+  performanceMetrics: {
+    accuracy: number
+    speed: number
+    scalability: number
+  }
+}
+```
+
+## Performance Requirements
+
+### Frontend Performance
+- **First Contentful Paint**: < 1.5s
+- **Largest Contentful Paint**: < 2.5s
+- **Cumulative Layout Shift**: < 0.1
+- **First Input Delay**: < 100ms
+
+### Backend Performance
+- **API Response Time**: < 200ms (95th percentile)
+- **Database Queries**: < 50ms average
+- **WebRTC Connection**: < 3s establishment time
+- **Real-time Updates**: < 100ms latency
+
+### PWA Performance
+- **Offline Functionality**: Core features available offline
+- **Cache Hit Rate**: > 90% for static assets
+- **Service Worker**: < 1s activation time
+
+## Security Requirements
+
+### Authentication & Authorization
+- **JWT Tokens**: 15-minute access, 7-day refresh
+- **Role-based Access**: Admin, Analyst, User roles
+- **Multi-factor Authentication**: Required for admin access
+- **Session Management**: Secure session handling
+
+### Data Protection
+- **Encryption**: AES-256 for data at rest, TLS 1.3 for transit
+- **Input Validation**: All inputs validated and sanitized
+- **SQL Injection Prevention**: Parameterized queries only
+- **XSS Protection**: Content Security Policy headers
+
+### WebRTC Security
+- **HTTPS Required**: All WebRTC connections over HTTPS
+- **ICE Candidate Validation**: Validate all ICE candidates
+- **Media Permissions**: Explicit user consent for media access
+- **Data Channel Encryption**: End-to-end encryption for messages
+
+## Testing Strategy
+
+### Frontend Testing
+- **Unit Tests**: Jest + React Testing Library
+- **Integration Tests**: Cypress for E2E testing
+- **WebRTC Tests**: Mock WebRTC APIs for testing
+- **PWA Tests**: Lighthouse CI for PWA compliance
+
+### Backend Testing
+- **Unit Tests**: pytest for business logic
+- **API Tests**: FastAPI TestClient for endpoints
+- **Integration Tests**: Test database interactions
+- **Performance Tests**: Load testing with locust
+
+## Deployment & DevOps
+
+### Environment Configuration
+- **Development**: Local development with hot reload
+- **Staging**: Production-like environment for testing
+- **Production**: Kubernetes deployment with auto-scaling
+
+### CI/CD Pipeline
+- **Code Quality**: ESLint, Prettier, TypeScript checks
+- **Testing**: Automated test suite execution
+- **Security**: Dependency vulnerability scanning
+- **Deployment**: Automated deployment to staging/production
+
+### Monitoring & Observability
+- **Application Metrics**: Prometheus + Grafana
+- **Error Tracking**: Sentry for error monitoring
+- **Performance Monitoring**: Real User Monitoring (RUM)
+- **WebRTC Metrics**: Connection quality and latency tracking
+
+## Development Workflow
+
+### Git Workflow
+- **Main Branch**: Production-ready code
+- **Feature Branches**: Feature development
+- **Pull Requests**: Code review required
+- **Commit Messages**: Conventional commits format
+
+### Code Review Process
+- **Automated Checks**: Linting, testing, security scans
+- **Peer Review**: At least one reviewer required
+- **Performance Review**: Performance impact assessment
+- **Security Review**: Security implications evaluation
+
+## AI Integration Guidelines
+
+### LLM Integration
+- **OpenAI GPT-4**: Primary reasoning engine
+- **Claude 3.5 Sonnet**: Specialized analysis
+- **Custom Models**: Fine-tuned for specific domains
+- **Rate Limiting**: Respect API rate limits
+
+### Quantum-Enhanced Features
+- **QEMASI Algorithm**: Quantum-inspired optimization
+- **Hybrid Approach**: Classical + quantum methods
+- **Performance Validation**: Benchmark against classical methods
+- **Scalability**: Handle increasing problem complexity
+
+## Documentation Requirements
+
+### Code Documentation
+- **JSDoc**: All functions and classes documented
+- **README**: Comprehensive setup and usage guides
+- **API Documentation**: OpenAPI/Swagger specifications
+- **Architecture Docs**: System design and decisions
+
+### User Documentation
+- **Feature Guides**: How to use each revolutionary feature
+- **API Reference**: Complete API documentation
+- **Troubleshooting**: Common issues and solutions
+- **Best Practices**: Recommended usage patterns
+
+## Quality Assurance
+
+### Code Quality Metrics
+- **Test Coverage**: > 90% for critical paths
+- **Code Complexity**: Cyclomatic complexity < 10
+- **Technical Debt**: Regular refactoring and cleanup
+- **Performance Budget**: Monitor bundle size and load times
+
+### User Experience
+- **Accessibility**: WCAG 2.1 AA compliance
+- **Responsive Design**: Mobile-first approach
+- **Browser Support**: Modern browsers (Chrome, Firefox, Safari, Edge)
+- **Progressive Enhancement**: Core functionality without JavaScript
+
+## Emergency Procedures
+
+### Incident Response
+- **Monitoring Alerts**: Immediate notification of issues
+- **Rollback Procedures**: Quick rollback to previous version
+- **Communication**: Stakeholder notification process
+- **Post-mortem**: Analysis and prevention measures
+
+### Security Incidents
+- **Threat Detection**: Automated security monitoring
+- **Response Plan**: Immediate containment and investigation
+- **Notification**: Legal and regulatory requirements
+- **Recovery**: System restoration and hardening
+
+---
+
+**Remember**: This platform represents the future of business intelligence. Every line of code should reflect the highest standards of quality, security, and performance. The 16 revolutionary features must work seamlessly together to provide unparalleled strategic advantage to our users.

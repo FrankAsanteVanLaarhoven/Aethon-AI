@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: strategic-ai
+  labels:
+    name: strategic-ai
+    environment: production
