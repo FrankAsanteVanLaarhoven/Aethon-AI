@@ -1,0 +1,162 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: strategic-ai
+  labels:
+    app: api-gateway
+    component: gateway
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+        component: gateway
+    spec:
+      containers:
+      - name: api-gateway
+        image: strategic-ai/api-gateway:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: ENVIRONMENT
+          value: "production"
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: REDIS_URL
+          value: "redis://redis-service:6379"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: database-secret
+              key: url
+        - name: JWT_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: jwt-secret
+              key: secret
+        - name: CORS_ORIGINS
+          value: "https://strategic-ai.com,https://app.strategic-ai.com"
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+      volumes:
+      - name: config-volume
+        configMap:
+          name: api-gateway-config
+      imagePullSecrets:
+      - name: registry-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway-service
+  namespace: strategic-ai
+  labels:
+    app: api-gateway
+spec:
+  selector:
+    app: api-gateway
+  ports:
+  - protocol: TCP
+    port: 8000
+    targetPort: 8000
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-gateway-config
+  namespace: strategic-ai
+data:
+  config.yaml: |
+    api:
+      version: "v1"
+      rate_limit:
+        requests_per_minute: 1000
+        burst_size: 100
+      authentication:
+        jwt_expiry: "24h"
+        refresh_token_expiry: "7d"
+      cors:
+        allowed_origins:
+          - "https://strategic-ai.com"
+          - "https://app.strategic-ai.com"
+        allowed_methods:
+          - "GET"
+          - "POST"
+          - "PUT"
+          - "DELETE"
+          - "OPTIONS"
+        allowed_headers:
+          - "Authorization"
+          - "Content-Type"
+          - "X-Requested-With"
+    services:
+      business_intelligence:
+        url: "http://business-intelligence-service:8001"
+        timeout: 30
+      competitive_intelligence:
+        url: "http://competitive-intelligence-service:8002"
+        timeout: 30
+      multi_agent:
+        url: "http://multi-agent-service:8003"
+        timeout: 30
+      strategic_simulation:
+        url: "http://strategic-simulation-service:8004"
+        timeout: 30
+      unified_navigation:
+        url: "http://unified-navigation-service:8005"
+        timeout: 60
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: api-gateway-hpa
+  namespace: strategic-ai
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api-gateway
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80

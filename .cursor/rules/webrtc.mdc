@@ -1,0 +1,374 @@
+# WebRTC Implementation Rules
+
+## Core Principles
+- **Security First**: All WebRTC connections must use HTTPS/WSS
+- **User Consent**: Explicit permission for media access
+- **Graceful Degradation**: Fallback for unsupported browsers
+- **Performance**: Optimize for low latency and high quality
+
+## Implementation Guidelines
+
+### Signaling Server Setup
+```typescript
+// Use Socket.io for signaling
+const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL, {
+  transports: ['websocket', 'polling'],
+  autoConnect: false
+})
+
+// Handle connection states
+socket.on('connect', () => {
+  console.log('Connected to signaling server')
+})
+
+socket.on('disconnect', () => {
+  console.log('Disconnected from signaling server')
+})
+```
+
+### Peer Connection Configuration
+```typescript
+const STUN_SERVERS = {
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'stun:stun1.l.google.com:19302' },
+    { urls: 'stun:stun2.l.google.com:19302' }
+  ]
+}
+
+const peerConnection = new RTCPeerConnection(STUN_SERVERS)
+```
+
+### Media Stream Handling
+```typescript
+// Get user media with error handling
+const getUserMedia = async (constraints: MediaStreamConstraints) => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia(constraints)
+    return stream
+  } catch (error) {
+    console.error('Error accessing media devices:', error)
+    throw new Error('Media access denied or unavailable')
+  }
+}
+
+// Screen sharing
+const getDisplayMedia = async () => {
+  try {
+    const stream = await navigator.mediaDevices.getDisplayMedia({
+      video: true,
+      audio: true
+    })
+    return stream
+  } catch (error) {
+    console.error('Error accessing display media:', error)
+    throw new Error('Screen sharing not available')
+  }
+}
+```
+
+### ICE Candidate Handling
+```typescript
+// Send ICE candidates
+peerConnection.onicecandidate = (event) => {
+  if (event.candidate) {
+    socket.emit('ice-candidate', {
+      to: targetUserId,
+      candidate: event.candidate
+    })
+  }
+}
+
+// Receive ICE candidates
+socket.on('ice-candidate', async (data) => {
+  const peerConnection = peerConnections.get(data.from)
+  if (peerConnection) {
+    await peerConnection.addIceCandidate(data.candidate)
+  }
+})
+```
+
+### Offer/Answer Exchange
+```typescript
+// Create and send offer
+const createOffer = async (targetUserId: string) => {
+  const offer = await peerConnection.createOffer()
+  await peerConnection.setLocalDescription(offer)
+  
+  socket.emit('offer', {
+    to: targetUserId,
+    offer: offer
+  })
+}
+
+// Handle incoming offer
+const handleOffer = async (from: string, offer: RTCSessionDescriptionInit) => {
+  const peerConnection = new RTCPeerConnection(STUN_SERVERS)
+  await peerConnection.setRemoteDescription(offer)
+  
+  const answer = await peerConnection.createAnswer()
+  await peerConnection.setLocalDescription(answer)
+  
+  socket.emit('answer', {
+    to: from,
+    answer: answer
+  })
+}
+```
+
+## Security Requirements
+
+### HTTPS Enforcement
+```typescript
+// Check for HTTPS in production
+if (process.env.NODE_ENV === 'production' && location.protocol !== 'https:') {
+  throw new Error('WebRTC requires HTTPS in production')
+}
+```
+
+### Media Permission Validation
+```typescript
+// Validate media permissions
+const checkMediaPermissions = async () => {
+  try {
+    const permissions = await navigator.permissions.query({ name: 'camera' as PermissionName })
+    if (permissions.state === 'denied') {
+      throw new Error('Camera access denied')
+    }
+  } catch (error) {
+    console.warn('Permission API not supported:', error)
+  }
+}
+```
+
+### ICE Candidate Validation
+```typescript
+// Validate ICE candidates
+const validateIceCandidate = (candidate: RTCIceCandidateInit): boolean => {
+  if (!candidate.candidate) return false
+  
+  // Check for malicious patterns
+  const maliciousPatterns = [
+    /javascript:/i,
+    /data:/i,
+    /vbscript:/i
+  ]
+  
+  return !maliciousPatterns.some(pattern => pattern.test(candidate.candidate))
+}
+```
+
+## Error Handling
+
+### Connection State Management
+```typescript
+// Monitor connection state
+peerConnection.onconnectionstatechange = () => {
+  const state = peerConnection.connectionState
+  console.log('Connection state:', state)
+  
+  switch (state) {
+    case 'connected':
+      // Connection established
+      break
+    case 'disconnected':
+      // Attempt reconnection
+      break
+    case 'failed':
+      // Handle connection failure
+      break
+    case 'closed':
+      // Clean up resources
+      break
+  }
+}
+```
+
+### Media Stream Error Handling
+```typescript
+// Handle media stream errors
+const handleMediaStreamError = (stream: MediaStream) => {
+  stream.getTracks().forEach(track => {
+    track.onended = () => {
+      console.log('Media track ended:', track.kind)
+      // Handle track ending
+    }
+    
+    track.onerror = (error) => {
+      console.error('Media track error:', error)
+      // Handle track error
+    }
+  })
+}
+```
+
+## Performance Optimization
+
+### Bandwidth Management
+```typescript
+// Configure bandwidth constraints
+const configureBandwidth = (peerConnection: RTCPeerConnection) => {
+  const senders = peerConnection.getSenders()
+  
+  senders.forEach(sender => {
+    if (sender.track?.kind === 'video') {
+      const params = sender.getParameters()
+      if (params.encodings) {
+        params.encodings.forEach(encoding => {
+          encoding.maxBitrate = 1000000 // 1 Mbps
+          encoding.scaleResolutionDownBy = 2
+        })
+        sender.setParameters(params)
+      }
+    }
+  })
+}
+```
+
+### Adaptive Quality
+```typescript
+// Implement adaptive quality based on network conditions
+const adaptQuality = (peerConnection: RTCPeerConnection) => {
+  peerConnection.onconnectionstatechange = () => {
+    const state = peerConnection.connectionState
+    
+    if (state === 'connected') {
+      // Monitor network quality and adjust accordingly
+      const stats = peerConnection.getStats()
+      stats.then(report => {
+        // Analyze network statistics and adjust quality
+      })
+    }
+  }
+}
+```
+
+## Testing Guidelines
+
+### Mock WebRTC APIs
+```typescript
+// Mock for testing
+const mockWebRTC = () => {
+  global.RTCPeerConnection = jest.fn().mockImplementation(() => ({
+    createOffer: jest.fn().mockResolvedValue({}),
+    createAnswer: jest.fn().mockResolvedValue({}),
+    setLocalDescription: jest.fn().mockResolvedValue(undefined),
+    setRemoteDescription: jest.fn().mockResolvedValue(undefined),
+    addIceCandidate: jest.fn().mockResolvedValue(undefined),
+    addTrack: jest.fn(),
+    getSenders: jest.fn().mockReturnValue([]),
+    close: jest.fn()
+  }))
+  
+  global.navigator.mediaDevices = {
+    getUserMedia: jest.fn().mockResolvedValue({
+      getTracks: jest.fn().mockReturnValue([])
+    }),
+    getDisplayMedia: jest.fn().mockResolvedValue({
+      getTracks: jest.fn().mockReturnValue([])
+    })
+  }
+}
+```
+
+### Connection Testing
+```typescript
+// Test connection establishment
+const testConnection = async () => {
+  const pc1 = new RTCPeerConnection(STUN_SERVERS)
+  const pc2 = new RTCPeerConnection(STUN_SERVERS)
+  
+  // Set up connection between two peers
+  pc1.onicecandidate = (event) => {
+    if (event.candidate) {
+      pc2.addIceCandidate(event.candidate)
+    }
+  }
+  
+  pc2.onicecandidate = (event) => {
+    if (event.candidate) {
+      pc1.addIceCandidate(event.candidate)
+    }
+  }
+  
+  // Test offer/answer exchange
+  const offer = await pc1.createOffer()
+  await pc1.setLocalDescription(offer)
+  await pc2.setRemoteDescription(offer)
+  
+  const answer = await pc2.createAnswer()
+  await pc2.setLocalDescription(answer)
+  await pc1.setRemoteDescription(answer)
+  
+  // Verify connection state
+  expect(pc1.connectionState).toBe('connected')
+  expect(pc2.connectionState).toBe('connected')
+}
+```
+
+## Best Practices
+
+### Resource Cleanup
+```typescript
+// Always clean up resources
+const cleanup = (peerConnection: RTCPeerConnection, stream: MediaStream) => {
+  // Stop all tracks
+  stream.getTracks().forEach(track => track.stop())
+  
+  // Close peer connection
+  peerConnection.close()
+  
+  // Remove event listeners
+  peerConnection.onicecandidate = null
+  peerConnection.ontrack = null
+  peerConnection.onconnectionstatechange = null
+}
+```
+
+### User Experience
+```typescript
+// Provide clear feedback to users
+const showConnectionStatus = (status: string) => {
+  const statusElement = document.getElementById('connection-status')
+  if (statusElement) {
+    statusElement.textContent = status
+    statusElement.className = `status ${status.toLowerCase()}`
+  }
+}
+
+// Handle user interactions gracefully
+const handleUserInteraction = async (action: () => Promise<void>) => {
+  try {
+    showConnectionStatus('Connecting...')
+    await action()
+    showConnectionStatus('Connected')
+  } catch (error) {
+    showConnectionStatus('Connection failed')
+    console.error('Connection error:', error)
+  }
+}
+```
+
+## Integration with Strategic AI Platform
+
+### Real-time Collaboration Features
+- **Video Conferencing**: Multi-participant video calls
+- **Screen Sharing**: Share strategic dashboards and analysis
+- **Chat Integration**: Real-time messaging during collaboration
+- **File Transfer**: Share documents and data via data channels
+
+### AI-Powered Features
+- **Smart Transcription**: AI-powered meeting transcription
+- **Sentiment Analysis**: Real-time analysis of participant sentiment
+- **Action Item Extraction**: Automatic extraction of action items
+- **Meeting Summaries**: AI-generated meeting summaries
+
+### Security Integration
+- **End-to-End Encryption**: All communications encrypted
+- **Access Control**: Role-based access to collaboration features
+- **Audit Logging**: Complete audit trail of all interactions
+- **Compliance**: Meet enterprise security requirements
+
+---
+
+**Remember**: WebRTC is a powerful technology that enables real-time communication. Always prioritize security, user experience, and performance. Test thoroughly across different browsers and network conditions.

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StrategicAI Platform - Business Intelligence & Multi-Agent Orchestration</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.ico">
+    <link rel="stylesheet" href="css/style.min.css?v=5">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-brand">
+            <div class="logo">⚡</div>
+            <span class="brand-name">StrategicAI Platform</span>
+        </div>
+        <div class="nav-links">
+            <a href="#" class="nav-link active" data-page="dashboard">Dashboard</a>
+            <a href="#" class="nav-link" data-page="intelligence">Intelligence</a>
+            <a href="#" class="nav-link" data-page="simulations">Simulations</a>
+            <a href="#" class="nav-link" data-page="agents">Agents</a>
+            <a href="#" class="nav-link" data-page="analytics">Analytics</a>
+        </div>
+        <div class="nav-status">
+            <div class="status-indicator active"></div>
+            <span>All Systems Operational</span>
+        </div>
+    </nav>
+
+    <!-- Main Dashboard -->
+    <div class="page page--dashboard dashboard-container">
+        <!-- Left Panel - Strategic Chessboard -->
+        <div class="left-panel">
+            <div class="panel-header">
+                <h2>Strategic Competitive Landscape</h2>
+                <div class="panel-controls">
+                    <button class="btn btn--sm btn--secondary" id="refresh-board">Refresh</button>
+                    <button class="btn btn--sm btn--primary" id="run-simulation">Run Simulation</button>
+                </div>
+            </div>
+            
+            <div class="chessboard-container">
+                <svg id="strategic-chessboard" width="700" height="500" viewBox="0 0 700 500">
+                    <!-- Chessboard grid -->
+                    <defs>
+                        <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+                            <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                        </pattern>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            <feMerge> 
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#grid)" />
+                    
+                    <!-- Company pieces will be dynamically generated -->
+                    <g id="company-pieces"></g>
+                    <g id="strategic-arrows"></g>
+                </svg>
+            </div>
+
+            <!-- Simulation Controls -->
+            <div class="simulation-controls">
+                <div class="control-section">
+                    <label>Scenario Type:</label>
+                    <select class="form-control" id="scenario-type">
+                        <option value="aggressive">Aggressive Market Entry</option>
+                        <option value="partnership">Strategic Partnership</option>
+                        <option value="acquisition">Technology Acquisition</option>
+                    </select>
+                </div>
+                <div class="control-section">
+                    <label>Time Horizon:</label>
+                    <select class="form-control" id="time-horizon">
+                        <option value="6m">6 Months</option>
+                        <option value="1y">1 Year</option>
+                        <option value="3y">3 Years</option>
+                        <option value="5y">5 Years</option>
+                    </select>
+                </div>
+                <div class="control-section">
+                    <label>Monte Carlo Iterations:</label>
+                    <input type="range" id="iterations" min="100" max="2000" value="1000" class="form-control">
+                    <span id="iterations-value">1000</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Multi-Agent Orchestration -->
+        <div class="right-panel">
+            <div class="panel-header">
+                <h2>Multi-Agent Orchestration</h2>
+                <div class="agent-summary">
+                    <span class="active-count">5 Active</span>
+                    <span class="processing-count">2 Processing</span>
+                </div>
+            </div>
+            
+            <div class="agents-container" id="agents-container">
+                <!-- Agents will be dynamically populated -->
+            </div>
+
+            <!-- Intelligence Feed -->
+            <div class="intelligence-section">
+                <div class="section-header">
+                    <h3>Competitive Intelligence Feed</h3>
+                    <div class="feed-controls">
+                        <button class="btn btn--sm btn--outline" id="filter-feed">Filter</button>
+                        <div class="live-indicator">
+                            <div class="pulse-dot"></div>
+                            LIVE
+                        </div>
+                    </div>
+                </div>
+                <div class="intelligence-feed" id="intelligence-feed">
+                    <!-- Intelligence items will be dynamically populated -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Analytics Panel (part of Dashboard) -->
+    <div class="analytics-panel">
+        <div class="analytics-header">
+            <h2>Strategic Analytics & Insights</h2>
+            <div class="analytics-tabs">
+                <button class="tab-btn active" data-tab="performance">Performance</button>
+                <button class="tab-btn" data-tab="scenarios">Scenarios</button>
+                <button class="tab-btn" data-tab="recommendations">Insights</button>
+            </div>
+        </div>
+
+        <div class="analytics-content">
+            <div class="tab-content active" id="performance-tab">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">85%</div>
+                        <div class="metric-label">Competitive Strength</div>
+                        <div class="metric-change positive">+12%</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">15%</div>
+                        <div class="metric-label">Market Share</div>
+                        <div class="metric-change positive">+3%</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">$2.5B</div>
+                        <div class="metric-label">Market Cap</div>
+                        <div class="metric-change positive">+18%</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">73%</div>
+                        <div class="metric-label">Success Probability</div>
+                        <div class="metric-change neutral">→</div>
+                    </div>
+                </div>
+                <div class="chart-container" style="position: relative; height: 300px;">
+                    <canvas id="performance-chart"></canvas>
+                </div>
+            </div>
+
+            <div class="tab-content" id="scenarios-tab">
+                <div class="scenarios-grid" id="scenarios-grid">
+                    <!-- Scenarios will be dynamically populated -->
+                </div>
+            </div>
+
+            <div class="tab-content" id="recommendations-tab">
+                <div class="insights-container">
+                    <div class="insight-card high-priority">
+                        <div class="insight-header">
+                            <span class="insight-type">Strategic Opportunity</span>
+                            <span class="insight-priority">HIGH</span>
+                        </div>
+                        <div class="insight-content">
+                            <h4>European Market Entry Window</h4>
+                            <p>Game theory models indicate optimal timing for European expansion within Q2 2025. Competitor analysis shows Scale AI delaying international expansion, creating 6-month opportunity window.</p>
+                        </div>
+                    </div>
+                    <div class="insight-card medium-priority">
+                        <div class="insight-header">
+                            <span class="insight-type">Competitive Threat</span>
+                            <span class="insight-priority">MEDIUM</span>
+                        </div>
+                        <div class="insight-content">
+                            <h4>Palantir SMB Platform Development</h4>
+                            <p>Intelligence indicates Palantir developing simplified platform for SMB market. Recommend accelerating feature development to maintain competitive advantage.</p>
+                        </div>
+                    </div>
+                    <div class="insight-card low-priority">
+                        <div class="insight-header">
+                            <span class="insight-type">Market Intelligence</span>
+                            <span class="insight-priority">LOW</span>
+                        </div>
+                        <div class="insight-content">
+                            <h4>Consulting Firms Digital Transformation</h4>
+                            <p>McKinsey and BCG increasing technology platform investments. Monitor for potential partnership or acquisition opportunities.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Intelligence Page -->
+    <div class="page page--intelligence hidden">
+        <div class="page-header"><h2>Intelligence</h2></div>
+        <div class="intelligence-feed" id="intelligence-feed-intel"></div>
+    </div>
+
+    <!-- Simulations Page -->
+    <div class="page page--simulations hidden">
+        <div class="page-header"><h2>Simulations</h2></div>
+        <div class="simulations-content">
+            <button class="btn btn--primary" id="simulate-now">Run Strategic Simulation</button>
+            <div class="simulations-log" id="simulations-log"></div>
+        </div>
+    </div>
+
+    <!-- Agents Page -->
+    <div class="page page--agents hidden">
+        <div class="page-header"><h2>Agents</h2></div>
+        <div class="agents-container" id="agents-container-page"></div>
+    </div>
+
+    <!-- Analytics Page -->
+    <div class="page page--analytics hidden">
+        <div class="page-header"><h2>Analytics</h2></div>
+        <div class="analytics-only" id="analytics-only"></div>
+    </div>
+
+    <!-- Modals and Overlays -->
+    <div class="modal hidden" id="company-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-company-name"></h3>
+                <button class="modal-close" id="close-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Company details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay hidden" id="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Running Strategic Simulation...</div>
+        <div class="loading-progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+    </div>
+
+    <!-- Modular JavaScript Components -->
+    <script type="module" src="src/config.js"></script>
+    <script type="module" src="src/utils/api.js"></script>
+    <script type="module" src="src/services/websocket.js"></script>
+    <script type="module" src="src/components/navigation.js"></script>
+    <script type="module" src="src/components/dashboard.js"></script>
+    <script type="module" src="src/components/analytics.js"></script>
+    <script type="module" src="src/components/intelligence.js"></script>
+    <script type="module" src="src/components/simulations.js"></script>
+    <script type="module" src="src/components/agents.js"></script>
+    <script type="module" src="src/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,552 @@
+# Progressive Web App (PWA) Implementation Rules
+
+## Core PWA Principles
+- **Reliability**: App works offline and loads instantly
+- **Performance**: Fast loading and smooth interactions
+- **Engagement**: Native app-like experience
+- **Installability**: Can be installed on user's device
+
+## Manifest Configuration
+
+### Basic Manifest Structure
+```json
+{
+  "name": "Strategic AI Platform",
+  "short_name": "StrategicAI",
+  "description": "World-Class Business Intelligence & Multi-Agent Orchestration Platform",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0ea5e9",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["business", "productivity", "utilities"]
+}
+```
+
+### Icon Requirements
+```json
+{
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ]
+}
+```
+
+### App Shortcuts
+```json
+{
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Access the main dashboard",
+      "url": "/dashboard",
+      "icons": [{ "src": "/favicon.ico", "sizes": "48x48" }]
+    },
+    {
+      "name": "QEMASI",
+      "short_name": "QEMASI",
+      "description": "Quantum-Enhanced Strategic Intelligence",
+      "url": "/qemasi",
+      "icons": [{ "src": "/favicon.ico", "sizes": "48x48" }]
+    }
+  ]
+}
+```
+
+## Service Worker Implementation
+
+### Service Worker Registration
+```typescript
+// Register service worker
+const registerServiceWorker = async () => {
+  if ('serviceWorker' in navigator) {
+    try {
+      const registration = await navigator.serviceWorker.register('/sw.js')
+      console.log('Service Worker registered:', registration)
+      
+      // Handle updates
+      registration.addEventListener('updatefound', () => {
+        const newWorker = registration.installing
+        if (newWorker) {
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              // New content available
+              showUpdateNotification()
+            }
+          })
+        }
+      })
+    } catch (error) {
+      console.error('Service Worker registration failed:', error)
+    }
+  }
+}
+```
+
+### Caching Strategies
+```typescript
+// Cache strategies for different resource types
+const CACHE_STRATEGIES = {
+  // Static assets - Cache First
+  static: {
+    strategy: 'CacheFirst',
+    cacheName: 'static-assets',
+    expiration: {
+      maxEntries: 100,
+      maxAgeSeconds: 30 * 24 * 60 * 60 // 30 days
+    }
+  },
+  
+  // API responses - Network First
+  api: {
+    strategy: 'NetworkFirst',
+    cacheName: 'api-responses',
+    expiration: {
+      maxEntries: 50,
+      maxAgeSeconds: 5 * 60 // 5 minutes
+    },
+    networkTimeoutSeconds: 10
+  },
+  
+  // Images - Stale While Revalidate
+  images: {
+    strategy: 'StaleWhileRevalidate',
+    cacheName: 'images',
+    expiration: {
+      maxEntries: 60,
+      maxAgeSeconds: 30 * 24 * 60 * 60 // 30 days
+    }
+  }
+}
+```
+
+### Offline Fallback
+```typescript
+// Offline fallback page
+const OFFLINE_FALLBACK = '/offline.html'
+
+// Handle offline scenarios
+const handleOffline = () => {
+  // Show offline indicator
+  const offlineIndicator = document.getElementById('offline-indicator')
+  if (offlineIndicator) {
+    offlineIndicator.style.display = 'block'
+  }
+  
+  // Cache critical data
+  cacheCriticalData()
+}
+
+const handleOnline = () => {
+  // Hide offline indicator
+  const offlineIndicator = document.getElementById('offline-indicator')
+  if (offlineIndicator) {
+    offlineIndicator.style.display = 'none'
+  }
+  
+  // Sync cached data
+  syncCachedData()
+}
+```
+
+## Performance Optimization
+
+### Critical Resource Loading
+```typescript
+// Preload critical resources
+const preloadCriticalResources = () => {
+  const criticalResources = [
+    '/fonts/main.woff2',
+    '/css/critical.css',
+    '/js/critical.js'
+  ]
+  
+  criticalResources.forEach(resource => {
+    const link = document.createElement('link')
+    link.rel = 'preload'
+    link.href = resource
+    link.as = resource.endsWith('.css') ? 'style' : 'script'
+    document.head.appendChild(link)
+  })
+}
+```
+
+### Lazy Loading
+```typescript
+// Lazy load non-critical components
+const lazyLoadComponent = (componentName: string) => {
+  return React.lazy(() => import(`@/components/${componentName}`))
+}
+
+// Usage in components
+const LazyComponent = lazyLoadComponent('HeavyComponent')
+
+const App = () => {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <LazyComponent />
+    </Suspense>
+  )
+}
+```
+
+### Bundle Optimization
+```typescript
+// Next.js bundle analyzer configuration
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true'
+})
+
+module.exports = withBundleAnalyzer({
+  // Bundle optimization settings
+  experimental: {
+    optimizeCss: true,
+    optimizePackageImports: ['@radix-ui/react-icons']
+  },
+  
+  // Webpack optimization
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all'
+          }
+        }
+      }
+    }
+    return config
+  }
+})
+```
+
+## Push Notifications
+
+### Notification Permission
+```typescript
+// Request notification permission
+const requestNotificationPermission = async () => {
+  if ('Notification' in window) {
+    const permission = await Notification.requestPermission()
+    
+    if (permission === 'granted') {
+      console.log('Notification permission granted')
+      return true
+    } else {
+      console.log('Notification permission denied')
+      return false
+    }
+  }
+  return false
+}
+```
+
+### Push Subscription
+```typescript
+// Subscribe to push notifications
+const subscribeToPush = async () => {
+  if ('serviceWorker' in navigator && 'PushManager' in window) {
+    const registration = await navigator.serviceWorker.ready
+    
+    const subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+    })
+    
+    // Send subscription to server
+    await fetch('/api/push/subscribe', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(subscription)
+    })
+    
+    return subscription
+  }
+  throw new Error('Push notifications not supported')
+}
+```
+
+### Notification Handling
+```typescript
+// Handle push notifications
+self.addEventListener('push', (event) => {
+  if (event.data) {
+    const data = event.data.json()
+    
+    const options = {
+      body: data.body,
+      icon: '/icon-192.png',
+      badge: '/badge-72.png',
+      vibrate: [100, 50, 100],
+      data: {
+        dateOfArrival: Date.now(),
+        primaryKey: data.primaryKey
+      },
+      actions: [
+        {
+          action: 'explore',
+          title: 'View Details',
+          icon: '/icon-192.png'
+        },
+        {
+          action: 'close',
+          title: 'Close',
+          icon: '/icon-192.png'
+        }
+      ]
+    }
+    
+    event.waitUntil(
+      self.registration.showNotification(data.title, options)
+    )
+  }
+})
+```
+
+## App Installation
+
+### Install Prompt
+```typescript
+// Handle install prompt
+let deferredPrompt: any
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Prevent the mini-infobar from appearing on mobile
+  e.preventDefault()
+  
+  // Stash the event so it can be triggered later
+  deferredPrompt = e
+  
+  // Show install button
+  const installButton = document.getElementById('install-button')
+  if (installButton) {
+    installButton.style.display = 'block'
+    installButton.addEventListener('click', installApp)
+  }
+})
+
+const installApp = async () => {
+  if (deferredPrompt) {
+    // Show the install prompt
+    deferredPrompt.prompt()
+    
+    // Wait for the user to respond to the prompt
+    const { outcome } = await deferredPrompt.userChoice
+    
+    if (outcome === 'accepted') {
+      console.log('User accepted the install prompt')
+    } else {
+      console.log('User dismissed the install prompt')
+    }
+    
+    // Clear the deferredPrompt
+    deferredPrompt = null
+  }
+}
+```
+
+### Installation Detection
+```typescript
+// Detect if app is installed
+const isAppInstalled = () => {
+  return window.matchMedia('(display-mode: standalone)').matches ||
+         (window.navigator as any).standalone === true
+}
+
+// Handle app installation
+window.addEventListener('appinstalled', () => {
+  console.log('PWA was installed')
+  
+  // Track installation event
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'pwa_install', {
+      event_category: 'PWA',
+      event_label: 'App Installed'
+    })
+  }
+})
+```
+
+## Offline Functionality
+
+### Offline Data Storage
+```typescript
+// IndexedDB for offline data storage
+const openDB = () => {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('StrategicAI', 1)
+    
+    request.onerror = () => reject(request.error)
+    request.onsuccess = () => resolve(request.result)
+    
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result
+      
+      // Create object stores
+      if (!db.objectStoreNames.contains('analytics')) {
+        db.createObjectStore('analytics', { keyPath: 'id' })
+      }
+      
+      if (!db.objectStoreNames.contains('reports')) {
+        db.createObjectStore('reports', { keyPath: 'id' })
+      }
+    }
+  })
+}
+```
+
+### Background Sync
+```typescript
+// Background sync for offline actions
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'background-sync') {
+    event.waitUntil(doBackgroundSync())
+  }
+})
+
+const doBackgroundSync = async () => {
+  try {
+    // Sync offline data
+    await syncOfflineData()
+    
+    // Sync cached reports
+    await syncCachedReports()
+    
+    console.log('Background sync completed')
+  } catch (error) {
+    console.error('Background sync failed:', error)
+  }
+}
+```
+
+## Testing PWA Features
+
+### Lighthouse Testing
+```typescript
+// Automated Lighthouse testing
+const runLighthouseTest = async (url: string) => {
+  const lighthouse = require('lighthouse')
+  const chromeLauncher = require('chrome-launcher')
+  
+  const chrome = await chromeLauncher.launch({ chromeFlags: ['--headless'] })
+  const options = {
+    logLevel: 'info',
+    output: 'json',
+    onlyCategories: ['pwa'],
+    port: chrome.port
+  }
+  
+  const runnerResult = await lighthouse(url, options)
+  await chrome.kill()
+  
+  return runnerResult
+}
+```
+
+### PWA Testing Checklist
+```typescript
+// PWA testing checklist
+const pwaTestChecklist = {
+  manifest: {
+    valid: true,
+    icons: true,
+    display: 'standalone',
+    theme_color: true,
+    background_color: true
+  },
+  
+  serviceWorker: {
+    registered: true,
+    caching: true,
+    offline: true,
+    updates: true
+  },
+  
+  performance: {
+    firstContentfulPaint: '< 1.5s',
+    largestContentfulPaint: '< 2.5s',
+    cumulativeLayoutShift: '< 0.1',
+    firstInputDelay: '< 100ms'
+  },
+  
+  accessibility: {
+    colorContrast: true,
+    keyboardNavigation: true,
+    screenReader: true,
+    focusManagement: true
+  }
+}
+```
+
+## Security Considerations
+
+### HTTPS Enforcement
+```typescript
+// Enforce HTTPS in production
+if (process.env.NODE_ENV === 'production' && location.protocol !== 'https:') {
+  location.replace(`https:${location.href.substring(location.protocol.length)}`)
+}
+```
+
+### Content Security Policy
+```typescript
+// CSP headers for PWA
+const cspHeaders = {
+  'Content-Security-Policy': [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: https:",
+    "font-src 'self' data:",
+    "connect-src 'self' https: wss:",
+    "media-src 'self'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'"
+  ].join('; ')
+}
+```
+
+## Integration with Strategic AI Platform
+
+### Offline Analytics
+- **Cached Reports**: Access critical reports offline
+- **Data Sync**: Automatic sync when connection restored
+- **Offline Indicators**: Clear indication of offline status
+- **Background Processing**: Continue analysis offline
+
+### Push Notifications for Intelligence
+- **Alert Notifications**: Critical intelligence alerts
+- **Report Ready**: Notifications when reports are complete
+- **System Updates**: Platform updates and maintenance
+- **Security Alerts**: Security-related notifications
+
+### App Shortcuts for Quick Access
+- **Dashboard**: Quick access to main dashboard
+- **QEMASI**: Direct access to quantum intelligence
+- **Chess BI**: Strategic analysis tools
+- **Reports**: Recent and favorite reports
+
+---
+
+**Remember**: PWA features should enhance the user experience without compromising security or performance. Always test thoroughly across different devices and network conditions.

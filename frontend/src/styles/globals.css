@@ -1,0 +1,423 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Premium Strategic AI Colors */
+:root {
+  --neon-blue: #0ea5e9;
+  --neon-green: #10b981;
+  --neon-yellow: #f59e0b;
+  --neon-purple: #8b5cf6;
+  --neon-pink: #ec4899;
+  --neon-cyan: #06b6d4;
+  --neon-red: #ef4444;
+}
+
+/* Neon Color Classes */
+.text-neon-blue { color: var(--neon-blue); }
+.text-neon-green { color: var(--neon-green); }
+.text-neon-yellow { color: var(--neon-yellow); }
+.text-neon-purple { color: var(--neon-purple); }
+.text-neon-pink { color: var(--neon-pink); }
+.text-neon-cyan { color: var(--neon-cyan); }
+.text-neon-red { color: var(--neon-red); }
+
+.bg-neon-blue { background-color: var(--neon-blue); }
+.bg-neon-green { background-color: var(--neon-green); }
+.bg-neon-yellow { background-color: var(--neon-yellow); }
+.bg-neon-purple { background-color: var(--neon-purple); }
+.bg-neon-pink { background-color: var(--neon-pink); }
+.bg-neon-cyan { background-color: var(--neon-cyan); }
+.bg-neon-red { background-color: var(--neon-red); }
+
+.border-neon-blue { border-color: var(--neon-blue); }
+.border-neon-green { border-color: var(--neon-green); }
+.border-neon-yellow { border-color: var(--neon-yellow); }
+.border-neon-purple { border-color: var(--neon-purple); }
+.border-neon-pink { border-color: var(--neon-pink); }
+.border-neon-cyan { border-color: var(--neon-cyan); }
+.border-neon-red { border-color: var(--neon-red); }
+
+/* Premium opacity variants */
+.bg-neon-blue\/10 { background-color: rgba(14, 165, 233, 0.08); }
+.bg-neon-green\/10 { background-color: rgba(16, 185, 129, 0.08); }
+.bg-neon-yellow\/10 { background-color: rgba(245, 158, 11, 0.08); }
+.bg-neon-purple\/10 { background-color: rgba(139, 92, 246, 0.08); }
+.bg-neon-pink\/10 { background-color: rgba(236, 72, 153, 0.08); }
+.bg-neon-cyan\/10 { background-color: rgba(6, 182, 212, 0.08); }
+.bg-neon-red\/10 { background-color: rgba(239, 68, 68, 0.08); }
+
+.bg-neon-blue\/20 { background-color: rgba(14, 165, 233, 0.15); }
+.bg-neon-green\/20 { background-color: rgba(16, 185, 129, 0.15); }
+.bg-neon-yellow\/20 { background-color: rgba(245, 158, 11, 0.15); }
+.bg-neon-purple\/20 { background-color: rgba(139, 92, 246, 0.15); }
+.bg-neon-pink\/20 { background-color: rgba(236, 72, 153, 0.15); }
+.bg-neon-cyan\/20 { background-color: rgba(6, 182, 212, 0.15); }
+.bg-neon-red\/20 { background-color: rgba(239, 68, 68, 0.15); }
+
+.border-neon-blue\/20 { border-color: rgba(14, 165, 233, 0.15); }
+.border-neon-green\/20 { border-color: rgba(16, 185, 129, 0.15); }
+.border-neon-yellow\/20 { border-color: rgba(245, 158, 11, 0.15); }
+.border-neon-purple\/20 { border-color: rgba(139, 92, 246, 0.15); }
+.border-neon-pink\/20 { border-color: rgba(236, 72, 153, 0.15); }
+.border-neon-cyan\/20 { border-color: rgba(6, 182, 212, 0.15); }
+.border-neon-red\/20 { border-color: rgba(239, 68, 68, 0.15); }
+
+.border-neon-blue\/50 { border-color: rgba(14, 165, 233, 0.3); }
+.border-neon-green\/50 { border-color: rgba(16, 185, 129, 0.3); }
+.border-neon-yellow\/50 { border-color: rgba(245, 158, 11, 0.3); }
+.border-neon-purple\/50 { border-color: rgba(139, 92, 246, 0.3); }
+.border-neon-pink\/50 { border-color: rgba(236, 72, 153, 0.3); }
+.border-neon-cyan\/50 { border-color: rgba(6, 182, 212, 0.3); }
+.border-neon-red\/50 { border-color: rgba(239, 68, 68, 0.3); }
+
+/* Premium Gradient classes */
+.from-neon-blue { --tw-gradient-from: var(--neon-blue); }
+.to-neon-green { --tw-gradient-to: var(--neon-green); }
+.from-neon-pink { --tw-gradient-from: var(--neon-pink); }
+.to-neon-cyan { --tw-gradient-to: var(--neon-cyan); }
+
+/* Premium shadow effects */
+.shadow-premium-blue { box-shadow: 0 4px 20px rgba(14, 165, 233, 0.15), 0 0 0 1px rgba(14, 165, 233, 0.1); }
+.shadow-premium-green { box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15), 0 0 0 1px rgba(16, 185, 129, 0.1); }
+.shadow-premium-purple { box-shadow: 0 4px 20px rgba(139, 92, 246, 0.15), 0 0 0 1px rgba(139, 92, 246, 0.1); }
+.shadow-premium-glow { box-shadow: 0 0 30px rgba(14, 165, 233, 0.2), 0 0 60px rgba(16, 185, 129, 0.1); }
+
+/* Premium glass morphism effects */
+.glass-premium { 
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@layer base {
+  :root {
+    /* Light Theme - Palantir-inspired Gun Metal */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 9%;
+    --radius: 0.5rem;
+    
+    /* Gun Metal Palette */
+    --gunmetal-50: 210 20% 98%;
+    --gunmetal-100: 210 20% 95%;
+    --gunmetal-200: 210 16% 93%;
+    --gunmetal-300: 210 14% 89%;
+    --gunmetal-400: 210 14% 83%;
+    --gunmetal-500: 210 11% 71%;
+    --gunmetal-600: 210 9% 60%;
+    --gunmetal-700: 210 10% 40%;
+    --gunmetal-800: 210 24% 16%;
+    --gunmetal-900: 210 24% 8%;
+    --gunmetal-950: 210 24% 4%;
+    
+    /* Steel Palette */
+    --steel-50: 0 0% 98%;
+    --steel-100: 0 0% 96%;
+    --steel-200: 0 0% 89%;
+    --steel-300: 0 0% 83%;
+    --steel-400: 0 0% 64%;
+    --steel-500: 0 0% 45%;
+    --steel-600: 0 0% 32%;
+    --steel-700: 0 0% 25%;
+    --steel-800: 0 0% 15%;
+    --steel-900: 0 0% 9%;
+    --steel-950: 0 0% 4%;
+    
+    /* Monochrome Colors */
+    --neon-white: 0 0% 100%;
+    --neon-light: 0 0% 96%;
+    --neon-medium: 0 0% 45%;
+    --neon-dark: 0 0% 25%;
+    --neon-black: 0 0% 0%;
+    --neon-red: 0 84% 60%;
+  }
+
+  .dark {
+    /* Dark Theme - Palantir-inspired Black */
+    --background: 0 0% 0%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 0 0% 98%;
+    
+    /* Dark Gun Metal Palette */
+    --gunmetal-50: 210 24% 4%;
+    --gunmetal-100: 210 24% 8%;
+    --gunmetal-200: 210 24% 16%;
+    --gunmetal-300: 210 10% 40%;
+    --gunmetal-400: 210 9% 60%;
+    --gunmetal-500: 210 11% 71%;
+    --gunmetal-600: 210 14% 83%;
+    --gunmetal-700: 210 14% 89%;
+    --gunmetal-800: 210 16% 93%;
+    --gunmetal-900: 210 20% 95%;
+    --gunmetal-950: 210 20% 98%;
+    
+    /* Dark Steel Palette */
+    --steel-50: 0 0% 4%;
+    --steel-100: 0 0% 9%;
+    --steel-200: 0 0% 15%;
+    --steel-300: 0 0% 25%;
+    --steel-400: 0 0% 32%;
+    --steel-500: 0 0% 45%;
+    --steel-600: 0 0% 64%;
+    --steel-700: 0 0% 83%;
+    --steel-800: 0 0% 89%;
+    --steel-900: 0 0% 96%;
+    --steel-950: 0 0% 98%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* Palantir-inspired Minimalist Components */
+  .palantir-card {
+    @apply bg-card border border-border rounded-lg shadow-sm hover:shadow-md transition-all duration-200;
+  }
+  
+  .palantir-button {
+    @apply px-4 py-2 rounded-md font-medium transition-all duration-200 border border-transparent;
+  }
+  
+  .palantir-button-primary {
+    @apply bg-foreground text-background hover:bg-foreground/90;
+  }
+  
+  .palantir-button-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 border-border;
+  }
+  
+  .palantir-button-ghost {
+    @apply hover:bg-muted hover:text-muted-foreground;
+  }
+  
+  .palantir-input {
+    @apply w-full px-3 py-2 rounded-md border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring focus:border-ring;
+  }
+  
+  .palantir-select {
+    @apply w-full px-3 py-2 rounded-md border border-border bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring;
+  }
+  
+  /* Status Indicators */
+  .status-indicator {
+    @apply w-2 h-2 rounded-full;
+  }
+  
+  .status-active {
+    @apply bg-neon-white animate-pulse;
+  }
+  
+  .status-processing {
+    @apply bg-neon-light animate-spin;
+  }
+  
+  .status-idle {
+    @apply bg-steel-500;
+  }
+  
+  .status-error {
+    @apply bg-neon-red;
+  }
+  
+  .status-warning {
+    @apply bg-neon-medium;
+  }
+  
+  /* Tesla-inspired Typography */
+  .tesla-heading {
+    @apply font-semibold tracking-tight;
+  }
+  
+  .tesla-text {
+    @apply font-normal leading-relaxed;
+  }
+  
+  .tesla-mono {
+    @apply font-mono text-sm;
+  }
+  
+  /* Palantir-inspired Layout */
+  .palantir-grid {
+    @apply grid gap-4;
+  }
+  
+  .palantir-flex {
+    @apply flex items-center gap-2;
+  }
+  
+  .palantir-spacing {
+    @apply space-y-4;
+  }
+  
+  /* Minimalist Animations */
+  .palantir-fade-in {
+    @apply animate-fade-in;
+  }
+  
+  .palantir-slide-up {
+    @apply transform translate-y-2 opacity-0 transition-all duration-200 ease-out;
+  }
+  
+  .palantir-slide-up.visible {
+    @apply translate-y-0 opacity-100;
+  }
+  
+  /* Glass Morphism Effects */
+  .glass-effect {
+    @apply bg-background/80 backdrop-blur-sm border border-border/50;
+  }
+  
+  .glass-effect-strong {
+    @apply bg-background/90 backdrop-blur-md border border-border/70;
+  }
+  
+  /* Neon Accents */
+  .neon-accent {
+    @apply relative;
+  }
+  
+  .neon-accent::before {
+    content: '';
+    @apply absolute inset-0 rounded-md bg-neon-white/20 blur-sm -z-10;
+  }
+  
+  /* Minimalist Shadows */
+  .shadow-minimal {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+  
+  .shadow-minimal-lg {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  /* Responsive Design */
+  .responsive-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4;
+  }
+  
+  .responsive-flex {
+    @apply flex flex-col sm:flex-row gap-4;
+  }
+  
+  /* Data Visualization Containers */
+  .viz-container {
+    @apply bg-card border border-border rounded-lg p-4;
+  }
+  
+  .viz-header {
+    @apply flex items-center justify-between mb-4;
+  }
+  
+  .viz-title {
+    @apply text-lg font-semibold text-foreground;
+  }
+  
+  .viz-subtitle {
+    @apply text-sm text-muted-foreground;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .quantum-shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      transparent
+    );
+    background-size: 200% 100%;
+    animation: quantum-shimmer 2s linear infinite;
+  }
+}
+
+/* Custom animations */
+@keyframes quantum-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
