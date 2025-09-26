@@ -1,0 +1,16 @@
+{
+  "name": "aethon-ai-platform",
+  "version": "1.0.0",
+  "description": "Aethon AI - Strategic Intelligence Platform",
+  "private": true,
+  "scripts": {
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "start": "cd frontend && npm start",
+    "install-deps": "cd frontend && npm install"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}

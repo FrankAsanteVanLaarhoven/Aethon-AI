@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: aethon-ai-frontend
+    env: node
+    plan: free
+    buildCommand: npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_APP_URL
+        value: https://aethon-ai-frontend.onrender.com
+    healthCheckPath: /
+    autoDeploy: true
+    branch: main
+    ignorePaths:
+      - backend
+      - infra
+      - docs
+      - tests
+      - aethon-ai-demo
+      - strategic-ai-demo

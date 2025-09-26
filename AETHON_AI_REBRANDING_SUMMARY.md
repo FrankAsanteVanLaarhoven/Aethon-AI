@@ -36,68 +36,23 @@
 
 ### 🖥️ **WebGL Demo Application**
 
-#### **New Desktop Application Created:**
-- **Location:** `/Users/frankvanlaarhoven/Desktop/strategic-ai-demo/`
-- **Technology Stack:** Electron + React + Three.js + React Three Fiber + Tailwind CSS
-- **Purpose:** Interactive 3D visualization of business metrics and market opportunity
+#### **WebGL Demo Application (Removed):**
+- **Status:** Electron desktop application has been removed from the project
+- **Reason:** Focus on web-based deployment and accessibility
+- **Alternative:** 3D visualizations are now integrated directly into the main web application
 
-#### **Key Features Implemented:**
+#### **3D Visualizations Now Integrated in Main Application:**
+- **Market Opportunity Charts:** Interactive visualizations in the main dashboard
+- **Revenue Projections:** Dynamic charts showing business growth metrics  
+- **Customer Analytics:** Visual representation of user engagement and growth
+- **Performance Metrics:** Real-time displays of system performance
 
-1. **Interactive 3D Scenes:**
-   - **Market Opportunity Visualization:** Animated bars showing TAM ($82.1B), AI-Enhanced BI ($80.0B), Real-time Collaboration ($2.1B), SAM ($12.3B), SOM ($0.615B)
-   - **Revenue Growth Line:** Interactive curve showing growth from $0.1M (2025) to $132.0M (2029)
-   - **Customer Growth:** 3D cylinders showing customer growth from 8 (2025) to 400 (2029)
-   - **Company Valuation:** 3D boxes showing valuation growth from $10M (2025) to $3.3B (2029)
-
-2. **Advanced 3D Features:**
-   - **Orbit Controls:** Users can rotate, zoom, and pan around 3D scenes
-   - **Animated Elements:** Bars, spheres, and shapes with smooth animations
-   - **Floating Particles:** 1000+ particles creating immersive background effects
-   - **Dynamic Lighting:** Ambient, directional, and point lights for realistic rendering
-   - **Environment Mapping:** Night preset for professional appearance
-
-3. **User Interface:**
-   - **Scene Navigation:** Tab-based switching between different visualizations
-   - **Real-time Info Panel:** Contextual information for each scene
-   - **Responsive Design:** Full-screen immersive experience
-   - **Professional Styling:** Gradient backgrounds and modern UI elements
-
-4. **Business Data Integration:**
-   - **Market Analysis:** Complete TAM/SAM/SOM breakdown
-   - **Financial Projections:** 5-year revenue and valuation forecasts
-   - **Customer Metrics:** Growth trajectory and scaling projections
-   - **Competitive Positioning:** Visual representation of market opportunity
-
-#### **Technical Implementation:**
-
-1. **Project Structure:**
-   ```
-   strategic-ai-demo/
-   ├── src/
-   │   ├── demo-scene.tsx      # Main 3D visualization component
-   │   ├── renderer.tsx        # React entry point
-   │   ├── index.html          # HTML template
-   │   └── index.css           # Tailwind CSS styles
-   ├── package.json            # Updated with Aethon AI branding
-   ├── tailwind.config.js      # Tailwind configuration
-   └── webpack.renderer.config.ts # PostCSS integration
-   ```
-
-2. **Dependencies Installed:**
-   - `three` - Core 3D graphics library
-   - `@react-three/fiber` - React renderer for Three.js
-   - `@react-three/drei` - Useful helpers and components
-   - `react` & `react-dom` - React framework
-   - `tailwindcss` - Utility-first CSS framework
-   - `postcss-loader` - CSS processing
-
-3. **3D Components Created:**
-   - `MarketOpportunityBars` - Animated bar charts
-   - `RevenueGrowthLine` - Interactive curve visualization
-   - `CustomerGrowth` - 3D cylinder charts
-   - `CompanyValuation` - 3D box visualizations
-   - `FloatingParticles` - Background particle effects
-   - `AnimatedBar` - Reusable animated bar component
+#### **Benefits of Web-based Approach:**
+- **No Installation Required:** Access directly through web browser
+- **Cross-platform Compatibility:** Works on all devices and operating systems
+- **Real-time Updates:** Live data integration with the main platform
+- **Responsive Design:** Optimized for mobile, tablet, and desktop viewing
+- **Easier Maintenance:** Single codebase for all platforms
 
 ### 🚀 **Application Status**
 
@@ -108,11 +63,10 @@
 - ✅ **WebRTC:** Real-time collaboration features
 - ✅ **All Features:** Available at http://localhost:3000/resources
 
-#### **WebGL Demo Application:**
-- ✅ **Development:** Complete and ready for testing
-- ✅ **3D Visualizations:** All business metrics implemented
-- ✅ **Interactive Features:** Navigation, animations, and controls
-- 🔄 **Testing:** Currently launching for validation
+#### **3D Visualizations:**
+- ✅ **Integrated:** 3D charts and visualizations now part of main web application
+- ✅ **Responsive:** Works across all devices and browsers
+- ✅ **Real-time:** Live data integration with platform metrics
 
 ### 📊 **Business Metrics Visualized**
 

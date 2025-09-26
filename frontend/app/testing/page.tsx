@@ -63,7 +63,7 @@ export default function TestingPage() {
           height: window.innerHeight
         },
         touchSupport: 'ontouchstart' in window,
-        webRTCSupport: !!(window.RTCPeerConnection || window.webkitRTCPeerConnection),
+        webRTCSupport: !!(window.RTCPeerConnection || (window as any).webkitRTCPeerConnection),
         mediaDevicesSupport: !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia),
         webSocketSupport: !!window.WebSocket,
         serviceWorkerSupport: 'serviceWorker' in navigator,

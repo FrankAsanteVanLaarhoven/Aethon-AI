@@ -68,7 +68,7 @@ export const WebRTCTestSuite: React.FC = () => {
       name,
       version,
       userAgent,
-      webRTCSupport: !!(window.RTCPeerConnection || window.webkitRTCPeerConnection),
+      webRTCSupport: !!(window.RTCPeerConnection || (window as any).webkitRTCPeerConnection),
       mediaDevicesSupport: !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia),
       webSocketSupport: !!window.WebSocket
     }
