@@ -5,6 +5,7 @@ services:
     plan: free
     buildCommand: npm install && npm run build
     startCommand: npm start
+    buildpack: https://github.com/heroku/heroku-buildpack-nodejs
     envVars:
       - key: NODE_ENV
         value: production
