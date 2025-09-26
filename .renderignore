@@ -1,0 +1,12 @@
+infra/
+backend/
+docs/
+tests/
+scripts/
+demo/
+investor_pitch/
+*.md
+.env
+.git/
+.next/
+node_modules/

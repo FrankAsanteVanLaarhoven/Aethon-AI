@@ -6,7 +6,6 @@ services:
     buildCommand: npm install && npm run build
     startCommand: npm start
     buildpack: https://github.com/heroku/heroku-buildpack-nodejs
-    dockerfilePath: ""
     envVars:
       - key: NODE_ENV
         value: production
@@ -16,3 +15,11 @@ services:
     autoDeploy: true
     branch: main
     rootDir: frontend
+    ignorePaths:
+      - infra
+      - backend
+      - docs
+      - tests
+      - scripts
+      - demo
+      - investor_pitch
