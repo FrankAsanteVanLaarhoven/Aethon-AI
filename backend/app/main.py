@@ -6,6 +6,7 @@ import asyncio
 
 from app.api.v1.router import api_router
 from app.api.v1.websocket import router as websocket_router
+from app.api.intelligence import router as intelligence_router
 from app.core.config import settings
 from app.db.session import engine
 from app.db.models import Base
@@ -99,6 +100,7 @@ if settings.enable_cors:
 # Include API routes
 app.include_router(api_router, prefix="/api/v1")
 app.include_router(websocket_router)  # WebSocket routes at root level
+app.include_router(intelligence_router, prefix="/api")  # Intelligence API routes
 
 @app.get("/")
 async def root():
@@ -128,6 +130,7 @@ async def root():
         "endpoints": {
             "health": "/api/v1/health",
             "intelligence": "/api/v1/intel",
+            "osint_intelligence": "/api/intelligence",
             "simulations": "/api/v1/simulations",
             "agents": "/api/v1/agents",
             "quantitative_data": "/api/v1/quant",
