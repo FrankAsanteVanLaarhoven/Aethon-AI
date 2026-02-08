@@ -1,0 +1,37 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            # Navigate to project directory (update this path as needed)
+            cd /root/Aethon-AI || git clone https://github.com/FrankAsanteVanLaarhoven/Aethon-AI.git /root/Aethon-AI && cd /root/Aethon-AI
+            
+            # Pull latest changes
+            git pull origin main
+            
+            # Create/Update .env file from secrets (optional but recommended)
+            # echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" > .env
+            # echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> .env
+            # echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+            
+            # Build and restart containers using the VPS specific compose file
+            docker compose -f infra/docker-compose.vps.yml up -d --build
+            
+            # Prune unused images to save space
+            docker image prune -f

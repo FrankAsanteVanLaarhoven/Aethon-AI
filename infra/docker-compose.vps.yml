@@ -1,0 +1,136 @@
+version: "3.8"
+
+services:
+  # Frontend - Next.js PWA
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile.production
+    container_name: aethon-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=https://api.aethon-ai.com
+      - NEXT_PUBLIC_SOCKET_URL=wss://api.aethon-ai.com
+    depends_on:
+      - backend
+    networks:
+      - public-proxy
+      - internal-network
+
+  # Backend - FastAPI with WebRTC signaling
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile.production
+    container_name: aethon-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=postgresql://strategicai:${DB_PASSWORD}@postgres:5432/strategicai
+      - REDIS_URL=redis://redis:6379
+      - SECRET_KEY=${SECRET_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - NEWS_API_KEY=${NEWS_API_KEY}
+      - PATENT_API_KEY=${PATENT_API_KEY}
+    depends_on:
+      - postgres
+      - redis
+      - mongodb
+    networks:
+      - public-proxy
+      - internal-network
+
+  # PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: aethon-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=strategicai
+      - POSTGRES_USER=strategicai
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - internal-network
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    container_name: aethon-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    networks:
+      - internal-network
+
+  # MongoDB
+  mongodb:
+    image: mongo:7
+    container_name: aethon-mongodb
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=strategicai
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_INITDB_DATABASE=strategicai
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - internal-network
+
+  # Celery Worker
+  celery-worker:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile.production
+    container_name: aethon-celery-worker
+    restart: unless-stopped
+    command: celery -A app.worker.celery_app worker --loglevel=info
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=postgresql://strategicai:${DB_PASSWORD}@postgres:5432/strategicai
+      - REDIS_URL=redis://redis:6379
+      - SECRET_KEY=${SECRET_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - internal-network
+
+  # Celery Beat
+  celery-beat:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile.production
+    container_name: aethon-celery-beat
+    restart: unless-stopped
+    command: celery -A app.worker.celery_app beat --loglevel=info
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=postgresql://strategicai:${DB_PASSWORD}@postgres:5432/strategicai
+      - REDIS_URL=redis://redis:6379
+      - SECRET_KEY=${SECRET_KEY}
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - internal-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  mongodb_data:
+
+networks:
+  public-proxy:
+    external: true
+  internal-network:
+    driver: bridge

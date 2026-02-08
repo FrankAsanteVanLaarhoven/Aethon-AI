@@ -19,34 +19,46 @@
 
 ## 🚀 **Deployment Instructions**
 
-### **For Vercel (Recommended)**
-```bash
-cd frontend
-vercel --prod --yes
-```
+### For VPS (Docker Compose & Nginx Proxy Manager)
+1.  **Prerequisites:**
+    *   Docker and Docker Compose installed on VPS.
+    *   Nginx Proxy Manager (NPM) installed and running.
+    *   `public-proxy` network created in Docker (if using NPM integration).
 
-### **For Render**
-1. Connect your GitHub repository to Render
-2. Select the `frontend` directory as the root directory
-3. Render will automatically detect the `render.yaml` configuration
-4. The deployment should now work correctly
+2.  **Manual Deployment:**
+    ```bash
+    git clone https://github.com/FrankAsanteVanLaarhoven/Aethon-AI.git
+    cd Aethon-AI
+    # Set up .env file with required secrets
+    docker compose -f infra/docker-compose.vps.yml up -d --build
+    ```
+
+3.  **Nginx Proxy Manager Configuration:**
+    *   **Frontend:** Forward domain (e.g., `app.aethon-ai.com`) to `aethon-frontend` on port `3000`.
+    *   **Backend:** Forward domain (e.g., `api.aethon-ai.com`) to `aethon-backend` on port `8000`.
+    *   **WebSockets:** Enable Websockets support in NPM for the backend.
+
+4.  **CI/CD (GitHub Actions):**
+    *   Configure secrets in GitHub: `HOST_IP`, `SSH_USER`, `SSH_KEY`.
+    *   Push to `main` triggers deployment.
 
 ## 🔧 **What Was Fixed**
 
-1. **Removed Electron Project:**
-   - Deleted `aethon-ai-demo` directory completely
-   - Removed all Electron-related files from repository
-   - Cleaned up documentation references
+1.  **Removed Electron Project:**
+    - Deleted `aethon-ai-demo` directory completely
+    - Removed all Electron-related files from repository
+    - Cleaned up documentation references
 
-2. **Fixed TypeScript Dependencies:**
-   - Added `@types/d3` and `@types/react-plotly.js`
-   - Fixed all compilation errors
-   - Ensured proper type safety
+2.  **Fixed TypeScript Dependencies:**
+    - Added `@types/d3` and `@types/react-plotly.js`
+    - Fixed all compilation errors
+    - Ensured proper type safety
 
-3. **Updated Deployment Configuration:**
-   - Created explicit Next.js deployment configs
-   - Removed confusing root package.json
-   - Added proper buildpack specifications
+3.  **Updated Deployment Configuration:**
+    - Created explicit Next.js deployment configs
+    - Removed confusing root package.json
+    - Added proper buildpack specifications
+    - **Added VPS Docker Compose configuration**
 
 ## 📱 **Application Features**
 
