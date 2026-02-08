@@ -34,8 +34,8 @@
     ```
 
 3.  **Nginx Proxy Manager Configuration:**
-    *   **Frontend:** Forward domain (e.g., `app.aethon-ai.com`) to `aethon-frontend` on port `3000`.
-    *   **Backend:** Forward domain (e.g., `api.aethon-ai.com`) to `aethon-backend` on port `8000`.
+    *   **Frontend:** Forward domain (e.g., `app.aethon-ai.com`) to `aethon-frontend` on port `3000` (if using Docker network) or `Host IP` on port `3005`.
+    *   **Backend:** Forward domain (e.g., `api.aethon-ai.com`) to `aethon-backend` on port `8000` (if using Docker network) or `Host IP` on port `8005`.
     *   **WebSockets:** Enable Websockets support in NPM for the backend.
 
 4.  **CI/CD (GitHub Actions):**
